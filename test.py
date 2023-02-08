@@ -1,30 +1,44 @@
 # using this site as a reference/guide
 # https://nextjournal.com/gkoehler/digit-recognition-with-keras
-
 ###############################
 #   PREPARING THE DATASET    #
 ##############################
 
 # imports for array-handling and plotting
+import numpy as np
+import tensorflow as tf
+from tensorflow import keras
 from keras.utils import np_utils
 from keras.layers.core import Dense, Dropout, Activation
 from keras.models import Sequential, load_model
 from keras.datasets import mnist
 import os
-import matplotlib.pyplot as plt
-import numpy as np
 import matplotlib
+from matplotlib import pyplot as plt
 matplotlib.use('agg')
+
 
 # let's keep our keras backend tensorflow quiet
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 # for testing on CPU
 # os.environ['CUDA_VISIBLE_DEVICES'] = ''
 
-# keras imports for the dataset and building our neural network
-
 # handy function that splits MNIST data into training and test sets
-# (X_train, y_train), (X_test, y_test) = mnist.load_data()
+(X_train, y_train), (X_test, y_test) = mnist.load_data()
+# summarize loaded dataset
+print('Train: X=%s, y=%s' % (X_train.shape, y_train.shape))
+print('Test: X=%s, y=%s' % (X_test.shape, y_test.shape))
+# Train: X=(60000, 28, 28), y=(60000,) --> 60k testing imgs that are 28x28 p
+# Test: X=(10000, 28, 28), y=(10000,)
+
+# plot first few images
+for i in range(9):
+    # define subplot
+    plt.subplot(330 + 1 + i)
+    # plot raw pixel data
+    plt.imshow(X_train[i], cmap=plt.get_cmap('gray'))
+# show the figure
+plt.show()
 
 # Let's inspect a few examples.  The MNIST dataset contains only grayscale images.
 # For more advanced image datasets, we'll have the three color channels (RGB).
@@ -59,15 +73,6 @@ fig
 # in local optima, since we're using stochastic gradient descent to find the optimal weights for the network.
 
 # Let's reshape our inputs to a single vector vector and normalize the pixel values to lie between 0 and 1.
-# let's print the shape before we reshape and normalize
-print("X_train shape", X_train.shape)
-print("y_train shape", y_train.shape)
-print("X_test shape", X_test.shape)
-print("y_test shape", y_test.shape)
-# X_train shape (60000, 28, 28)
-# y_train shape (60000,)
-# X_test shape (10000, 28, 28)
-# y_test shape (10000,)
 
 # building the input vector from the 28x28 pixels
 X_train = X_train.reshape(60000, 784)
